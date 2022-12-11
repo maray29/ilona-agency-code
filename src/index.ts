@@ -5,9 +5,69 @@ import SplitType from 'split-type';
 
 window.Webflow ||= [];
 window.Webflow.push(() => {
-  const name = 'John Doe';
+  // const name = 'John Doe';
   // greetUser(name);
 });
+
+gsap.registerPlugin(ScrollTrigger);
+
+const textRevealTl = gsap.timeline();
+// const scrollTrigger = ScrollTrigger();
+
+const text = document.querySelectorAll('[am-element="text-animation"]');
+
+text.forEach((textToAnimate) => {
+  const split_Text = new SplitType(textToAnimate, { types: `lines, words` });
+
+  gsap.from(split_Text.words, {
+    yPercent: 150,
+    stagger: 0.1,
+    duration: 0.8,
+    ease: 'power.out4',
+    scrollTrigger: {
+      trigger: textToAnimate,
+      start: 'top 70%',
+      once: true,
+    },
+  });
+
+  // scrollTrigger.create({
+  //   trigger: textToAnimate,
+  //   start: 'top top',
+  //   onEnter: textRevealTl.play(),
+  //   once: true,
+  // });
+});
+
+// const text_heading = new SplitType(text, { types: 'lines, words, chars' });
+
+// Heading animation
+const heading = document.querySelector('[am-element="heading-animation"]');
+const split_heading = new SplitType(heading, { types: 'words, chars' });
+
+textRevealTl.to(heading, { opacity: 1 });
+
+textRevealTl.from(split_heading.chars, {
+  yPercent: 150,
+  stagger: 0.02,
+  duration: 0.6,
+  ease: 'power.out4',
+});
+
+// headingTl.fromTo(
+//   split_heading.chars,
+//   {
+//     yPercent: 100,
+//     opacity: 0,
+//   },
+//   {
+//     yPercent: 0,
+//     opacity: 1,
+//     ease: 'power.out4',
+//     duration: 0.5,
+//     stagger: 0.1,
+//   }
+// );
 
 const buttons = gsap.utils.toArray('[am-element="button"]');
 
