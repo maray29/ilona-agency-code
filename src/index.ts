@@ -27,17 +27,21 @@ window.Webflow.push(() => {
 
   // console.log(splitText.words);
 
-  headerTl.from(splitText.words, {
-    yPercent: 150,
-    stagger: 0.1,
-    duration: 0.8,
-    ease: 'power.out4',
-    // scrollTrigger: {
-    //   trigger: word,
-    //   start: 'top 70%',
-    //   once: true,
-    // },
-  });
+  headerTl.from(
+    splitText.words,
+    {
+      yPercent: 120,
+      stagger: 0.05,
+      duration: 0.5,
+      ease: 'power.out4',
+      // scrollTrigger: {
+      //   trigger: word,
+      //   start: 'top 70%',
+      //   once: true,
+      // },
+    },
+    '<'
+  );
 
   // Buttons reveal animation
 
@@ -46,30 +50,39 @@ window.Webflow.push(() => {
     // batchMax: 3,   // maximum batch size (targets)
     onEnter: (batch) => {
       gsap.set(batch, { yPercent: 40 });
-      gsap.to(batch, { yPercent: 0, opacity: 1, stagger: 0.2, delay: 1.5 });
+      gsap.to(batch, { yPercent: 0, opacity: 1, stagger: 0.2 });
     },
   });
 
   // Heading animation
   const splitHeading = new SplitType(headerHeading, { types: 'words, chars' });
 
-  headerTl.set(headerHeading, { opacity: 1 });
+  gsap.set(headerHeading, { opacity: 1 });
 
-  headerTl.from(splitHeading.chars, {
-    yPercent: 150,
-    stagger: 0.02,
-    duration: 0.6,
-    ease: 'power.out4',
-  });
+  headerTl.from(
+    splitHeading.chars,
+    {
+      yPercent: 150,
+      stagger: 0.02,
+      duration: 0.6,
+      ease: 'power.out4',
+    },
+    '<'
+  );
 
   // Header video animation
-  headerTl.from(headerVideo, {
-    yPercent: 30,
-    opacity: 0,
-  });
+  headerTl.from(
+    headerVideo,
+    {
+      yPercent: 30,
+      opacity: 0,
+      delay: 0.2,
+    },
+    '<'
+  );
 
   headerTl.to(headerVideo, {
-    y: 100,
+    y: 300,
     scale: 0.0,
     scrollTrigger: {
       trigger: headerVideo,
@@ -93,9 +106,9 @@ window.Webflow.push(() => {
     const split_Text = new SplitType(textToAnimate, { types: `lines, words` });
 
     gsap.from(split_Text.words, {
-      yPercent: 150,
-      stagger: 0.1,
-      duration: 0.8,
+      yPercent: 120,
+      stagger: 0.03,
+      duration: 0.4,
       ease: 'power.out4',
       scrollTrigger: {
         trigger: textToAnimate,
@@ -158,7 +171,7 @@ window.Webflow.push(() => {
   }
 
   cards.forEach((card) => {
-    const cardMoveSpeed = getRandomInt(100, 200);
+    const cardMoveSpeed = getRandomInt(150, 300);
     gsap.from(card, {
       y: cardMoveSpeed,
       scrollTrigger: {
