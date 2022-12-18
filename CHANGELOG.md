@@ -1,5 +1,11 @@
 # @maray-ai/ilona-agency-code
 
+## 1.4.0
+
+### Minor Changes
+
+- fa4dd33: Corrected animation timiings and fixed bugs.
+
 ## 1.3.0
 
 ### Minor Changes
