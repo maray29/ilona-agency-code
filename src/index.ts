@@ -7,61 +7,11 @@ window.Webflow ||= [];
 window.Webflow.push(() => {
   // const name = 'John Doe';
   // greetUser(name);
+
   gsap.registerPlugin(ScrollTrigger);
 
   // Section color change when in viewport
-  // select the section
   const section = document.querySelector('[am-animation=section-bg-change]');
-  // const body = document.body;
-  console.log(section);
-
-  // when in viewport, change bg color to a bright color
-  // console.log('.section_values');
-  const bgTl = gsap.timeline();
-
-  // bgTl.to('.industries_list-wrapper', {
-  //   backgroungColor: 'red',
-  //   // scrolltrigger: {
-  //   //   trigger: '.industries_list-wrapper',
-  //   //   // start: 'top bottom',
-  //   //   // bottom: 'bottom top',
-  //   //   markers: true,
-  //   //   // pin: true, // pin the element to its starting position
-  //   //   // anticipatePin: 1, // allow the animation to start before the element reaches the start position
-  //   //   onEnter: () => {
-  //   //     ({ progress, direction, isActive }) => console.log(progress, direction, isActive);
-  //   //   },
-  //   // },
-  // });
-
-  // gsap.to(section, {
-  //   backgroundColor: '#e9e1d7',
-  //   scrollTrigger: {
-  //     trigger: section,
-  //     start: 'top bottom',
-  //     // end: () => `+=${section.offsetHeight}`,
-  //     end: 'bottom center',
-  //     // end: '+=500',
-  //     scrub: true,
-  //     markers: true,
-  //   },
-  // });
-
-  // gsap.to('.page-wrapper', {
-  //   // '--color': 'blue',
-  //   immediateRender: false,
-  //   backgroundColor: 'red',
-  //   onStart: () => {
-  //     ({ progress, direction, isActive }) => console.log(progress, direction, isActive);
-  //   },
-  //   scrollTrigger: {
-  //     trigger: '.section_values',
-  //     // scroller: section,
-  //     scrub: 2,
-  //     start: 'top bottom',
-  //     end: 'bottom top',
-  //   },
-  // });
 
   const sections = gsap.utils.toArray('[data-color]');
 
@@ -112,11 +62,6 @@ window.Webflow.push(() => {
       stagger: 0.05,
       duration: 0.5,
       ease: 'power.out4',
-      // scrollTrigger: {
-      //   trigger: word,
-      //   start: 'top 70%',
-      //   once: true,
-      // },
     },
     '<'
   );
@@ -124,12 +69,10 @@ window.Webflow.push(() => {
   // Buttons reveal animation
 
   ScrollTrigger.batch('[am-reveal-animation="header-button"]', {
-    // interval: 0.1, // time window (in seconds) for batching to occur.
-    // batchMax: 3,   // maximum batch size (targets)
     start: 'top 70%',
     onEnter: (batch) => {
-      gsap.set(batch, { yPercent: 30 });
-      gsap.to(batch, { yPercent: 0, opacity: 1, stagger: 0.2 });
+      gsap.set(batch, { yPercent: 40, opacity: 0 });
+      gsap.to(batch, { yPercent: 0, opacity: 1, stagger: 0.2, delay: 0.4 });
     },
   });
 
@@ -172,10 +115,6 @@ window.Webflow.push(() => {
     },
   });
 
-  // headerTl.set(headerVideo, {
-  //   display: 'none',
-  // });
-
   // General text reveal animation
 
   const text = document.querySelectorAll('[am-element="text-animation"]');
@@ -190,26 +129,39 @@ window.Webflow.push(() => {
       ease: 'power.out4',
       scrollTrigger: {
         trigger: textToAnimate,
-        start: 'top 70%',
+        start: 'top 80%',
         once: true,
       },
     });
   });
 
   // General reveal animation
-  const revealAnimationElements = gsap.utils.toArray('[am-reveal-animation="item"]');
+  const revealElements = gsap.utils.toArray('[am-reveal-animation="item"]');
+  gsap.set(revealElements, { yPercent: 30, opacity: 0 });
 
-  ScrollTrigger.batch(revealAnimationElements, {
-    // interval: 0.1, // time window (in seconds) for batching to occur.
-    // batchMax: 3,   // maximum batch size (targets)
-    // start: 'top 70%',
-    onEnter: (batch) => {
-      gsap.set(batch, { yPercent: 30, opacity: 0 });
-      gsap.to(batch, { yPercent: 0, opacity: 1, stagger: 0.2, duration: 0.5 });
+  const start = 70;
+  let specialStart;
+  const maxScroll = ScrollTrigger.maxScroll(window);
+  // const anim = gsap.timeline();
+  console.log(maxScroll, 'max scroll');
+
+  ScrollTrigger.batch(revealElements, {
+    start: 'top 80%',
+    onEnter: (elements) => {
+      gsap.to(elements, {
+        yPercent: 0,
+        opacity: 1,
+        stagger: 0.2,
+        duration: 0.75,
+      });
     },
   });
 
-  // // Divider reveal animation
+  // ScrollTrigger.addEventListener('refreshInit', () =>
+  //   gsap.set(revealElements, { yPercent: 30, opacity: 0 })
+  // );
+
+  // Divider reveal animation
   const dividers = gsap.utils.toArray('[am-reveal-animation="divider"');
 
   dividers.forEach((divider) => {
@@ -221,7 +173,7 @@ window.Webflow.push(() => {
       ease: 'power.out4',
       scrollTrigger: {
         trigger: divider,
-        start: 'top 70%',
+        start: 'top 80%',
         once: true,
       },
     });
@@ -255,12 +207,6 @@ window.Webflow.push(() => {
   });
 
   // Cards movement animation
-
-  // function getRandomInt(min, max) {
-  //   min = Math.ceil(min);
-  //   max = Math.floor(max);
-  //   return Math.floor(Math.random() * (max - min + 1)) + min;
-  // }
 
   // Create an array with speed numbers
   let cardSpeedArray = [];
@@ -447,66 +393,52 @@ window.Webflow.push(() => {
     }
   });
 
-  // gsap.to('[am-element="marquee_asterix"]', {
-  //   rotate: 360,
-  //   repeat: -1,
-  //   ease: 'none',
-  //   duration: 7,
-  // });
+  // List items reveal animation
 
-  // features row reveal animation
-  const featureRows = gsap.utils.toArray('[am-reveal-animation="row"]');
-  // console.log(featureRows);
-  let rowItems = [];
+  // Select all list wrappers
+  const containers = document.querySelectorAll('[am-reveal-animation="list"]');
+  console.log(containers);
 
-  // featureRows.forEach((row) => {
-  //   rowItems = gsap.utils.toArray(row.children);
-  //   ScrollTrigger.batch(rowItems, {
-  //     start: 'top 30%',
-  //     // once: true,
-  //     onEnter: (batch) => {
-  //       batch.forEach((item, index) => {
-  //         const tl = gsap.timeline();
-  //         tl.set(item, { yPercent: 120 });
-  //         tl.to(item, { yPercent: 0, opacity: 1, delay: index * 0.4 });
-  //       });
-  //     },
-  //   });
-  // });
+  function revealAnimation(containers, start) {
+    // Select the div container
+    for (let i = 0; i < containers.length; i++) {
+      // console.log('ran');
+      const container = containers[i];
+      // Create an empty array to store the child elements
+      const children = [];
 
-  const tl = gsap.timeline();
+      if (i === containers.length - 1) {
+        start = 90;
+        // console.log('true');
+      }
 
-  featureRows.forEach((row, index) => {
-    rowItems = gsap.utils.toArray(row.children);
-    // console.log(rowItems);
+      // Iterate over the child elements and add them to the array
+      for (let j = 0; j < container.children.length; j++) {
+        const wrapper = container.children[j];
+        children.push(wrapper.children);
+      }
 
-    gsap.from(rowItems, {
-      yPercent: 100,
-      stagger: 0.1,
-      delay: index * 0.4,
-      scrollTrigger: {
-        trigger: row,
-        start: 'top 70%',
-        once: true,
-      },
-    });
+      // console.log(children);
 
-    // rowItems.forEach((item, index) => {
+      // Iterate over the array of child elements
+      children.forEach(function (child, index) {
+        // Apply a reveal animation to each child element using GSAP
+        gsap.from(child, {
+          yPercent: 100,
+          stagger: 0.1,
+          delay: index * 0.1,
+          scrollTrigger: {
+            trigger: container,
+            start: `top ${start}%`,
+            // once: true,
+            // markers: true,
+          },
+        });
+      });
+    }
+  }
 
-    // });
-
-    // ScrollTrigger.batch(rowItems, {
-    //   start: 'top 30%',
-    //   // once: true,
-    //   onEnter: (batch) => {
-    //     batch.forEach((item, index) => {
-    //       const tl = gsap.timeline();
-    //       tl.set(item, { yPercent: 120 });
-    //       tl.to(item, { yPercent: 0, opacity: 1, delay: index * 0.4 });
-    //     });
-    //   },
-    // });
-  });
+  revealAnimation(containers, 70);
 
   ScrollTrigger.refresh();
 });
