@@ -1,5 +1,11 @@
 # @maray-ai/ilona-agency-code
 
+## 1.5.0
+
+### Minor Changes
+
+- 24763f9: Developed the majority of interactions and animation.
+
 ## 1.4.0
 
 ### Minor Changes
