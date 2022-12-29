@@ -9,10 +9,88 @@ window.Webflow.push(() => {
   // greetUser(name);
   gsap.registerPlugin(ScrollTrigger);
 
+  // Section color change when in viewport
+  // select the section
+  const section = document.querySelector('[am-animation=section-bg-change]');
+  // const body = document.body;
+  console.log(section);
+
+  // when in viewport, change bg color to a bright color
+  // console.log('.section_values');
+  const bgTl = gsap.timeline();
+
+  // bgTl.to('.industries_list-wrapper', {
+  //   backgroungColor: 'red',
+  //   // scrolltrigger: {
+  //   //   trigger: '.industries_list-wrapper',
+  //   //   // start: 'top bottom',
+  //   //   // bottom: 'bottom top',
+  //   //   markers: true,
+  //   //   // pin: true, // pin the element to its starting position
+  //   //   // anticipatePin: 1, // allow the animation to start before the element reaches the start position
+  //   //   onEnter: () => {
+  //   //     ({ progress, direction, isActive }) => console.log(progress, direction, isActive);
+  //   //   },
+  //   // },
+  // });
+
+  // gsap.to(section, {
+  //   backgroundColor: '#e9e1d7',
+  //   scrollTrigger: {
+  //     trigger: section,
+  //     start: 'top bottom',
+  //     // end: () => `+=${section.offsetHeight}`,
+  //     end: 'bottom center',
+  //     // end: '+=500',
+  //     scrub: true,
+  //     markers: true,
+  //   },
+  // });
+
+  // gsap.to('.page-wrapper', {
+  //   // '--color': 'blue',
+  //   immediateRender: false,
+  //   backgroundColor: 'red',
+  //   onStart: () => {
+  //     ({ progress, direction, isActive }) => console.log(progress, direction, isActive);
+  //   },
+  //   scrollTrigger: {
+  //     trigger: '.section_values',
+  //     // scroller: section,
+  //     scrub: 2,
+  //     start: 'top bottom',
+  //     end: 'bottom top',
+  //   },
+  // });
+
+  const sections = gsap.utils.toArray('[data-color]');
+
+  sections.forEach((section, i) => {
+    gsap.set(section, { backgroundColor: 'transparent' });
+
+    if (section.getAttribute('data-color') !== null) {
+      var colorAttr = section.getAttribute('data-color');
+
+      gsap.to('.page-wrapper', {
+        backgroundColor:
+          colorAttr === 'dark'
+            ? gsap.getProperty('html', '--dark')
+            : gsap.getProperty('html', '--light'),
+        immediateRender: false,
+        scrollTrigger: {
+          trigger: section,
+          scrub: true,
+          start: 'top bottom',
+          end: '+=100%',
+        },
+      });
+    }
+  });
+
   const headerTl = gsap.timeline();
   const nav = document.querySelector('[am-element="nav-element"]');
   const headerText = document.querySelector('[am-element="header-text"]');
-  const headerButtons = gsap.utils.toArray('[am-element="header-button"]');
+  // const headerButtons = gsap.utils.toArray('[am-element="header-button"]');
   const headerHeading = document.querySelector('[am-element="header-heading"]');
   const headerVideo = document.querySelector('[am-element="video"]');
 
@@ -45,11 +123,12 @@ window.Webflow.push(() => {
 
   // Buttons reveal animation
 
-  ScrollTrigger.batch('.button', {
+  ScrollTrigger.batch('[am-reveal-animation="header-button"]', {
     // interval: 0.1, // time window (in seconds) for batching to occur.
     // batchMax: 3,   // maximum batch size (targets)
+    start: 'top 70%',
     onEnter: (batch) => {
-      gsap.set(batch, { yPercent: 40 });
+      gsap.set(batch, { yPercent: 30 });
       gsap.to(batch, { yPercent: 0, opacity: 1, stagger: 0.2 });
     },
   });
@@ -98,7 +177,6 @@ window.Webflow.push(() => {
   // });
 
   // General text reveal animation
-  const revealTl = gsap.timeline();
 
   const text = document.querySelectorAll('[am-element="text-animation"]');
 
@@ -118,11 +196,24 @@ window.Webflow.push(() => {
     });
   });
 
+  // General reveal animation
+  const revealAnimationElements = gsap.utils.toArray('[am-reveal-animation="item"]');
+
+  ScrollTrigger.batch(revealAnimationElements, {
+    // interval: 0.1, // time window (in seconds) for batching to occur.
+    // batchMax: 3,   // maximum batch size (targets)
+    // start: 'top 70%',
+    onEnter: (batch) => {
+      gsap.set(batch, { yPercent: 30, opacity: 0 });
+      gsap.to(batch, { yPercent: 0, opacity: 1, stagger: 0.2, duration: 0.5 });
+    },
+  });
+
   // // Divider reveal animation
-  const dividers = gsap.utils.toArray('[am-element="divider-animation"');
+  const dividers = gsap.utils.toArray('[am-reveal-animation="divider"');
 
   dividers.forEach((divider) => {
-    console.log(divider);
+    // console.log(divider);
     gsap.from(divider, {
       scaleX: 0,
       duration: 0.75,
@@ -164,14 +255,45 @@ window.Webflow.push(() => {
   });
 
   // Cards movement animation
-  function getRandomInt(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+
+  // function getRandomInt(min, max) {
+  //   min = Math.ceil(min);
+  //   max = Math.floor(max);
+  //   return Math.floor(Math.random() * (max - min + 1)) + min;
+  // }
+
+  // Create an array with speed numbers
+  let cardSpeedArray = [];
+  let num = 60;
+  cards.forEach(() => {
+    num += 30;
+    cardSpeedArray.push(num);
+  });
+
+  // Shuffle the array to randomize the speed values
+  function shuffle(array) {
+    let currentIndex = array.length,
+      randomIndex;
+
+    // While there remain elements to shuffle.
+    while (currentIndex != 0) {
+      // Pick a remaining element.
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+
+      // And swap it with the current element.
+      [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+    }
+
+    return array;
   }
 
-  cards.forEach((card) => {
-    const cardMoveSpeed = getRandomInt(150, 300);
+  shuffle(cardSpeedArray);
+
+  cards.forEach((card, index) => {
+    // const cardMoveSpeed = Math.floor(Math.random() * 9) * 30 + 60;
+    const cardMoveSpeed = cardSpeedArray[index];
+    // console.log(cardMoveSpeed, 'move speed');
     gsap.from(card, {
       y: cardMoveSpeed,
       scrollTrigger: {
@@ -184,6 +306,7 @@ window.Webflow.push(() => {
     });
   });
 
+  // button animation
   const buttons = gsap.utils.toArray('[am-element="button"]');
 
   buttons.forEach((button: HTMLButtonElement) => {
@@ -216,6 +339,20 @@ window.Webflow.push(() => {
     gsap.set(buttonArrowCopy, {});
 
     const buttonHoverTl = gsap.timeline({ paused: true });
+
+    // Set bg color
+    // const buttonBg = button.querySelector('[am-element="button-bg"]');
+    // console.log(buttonBg);
+
+    if (button.getAttribute('am-mode') === 'dark') {
+      gsap.to(buttonBg, {
+        backgroundColor: '#ffffff',
+      });
+    } else if (button.hasAttribute('am-mode=light')) {
+      gsap.to(buttonBg, {
+        backgroundColor: '#000000',
+      });
+    }
 
     buttonHoverTl.to(splitButtonText.chars, {
       yPercent: -100,
@@ -282,11 +419,94 @@ window.Webflow.push(() => {
     duration: 1,
     scrollTrigger: {
       trigger: cardCta,
-      start: 'bottom center',
-      end: 'bottom top',
-      markers: true,
+      start: 'center center',
+      end: '+=500',
+      // markers: true,
       scrub: true,
       // once: true,
     },
   });
+
+  const marqueeAsterix = gsap.utils.toArray('[am-element="marquee_asterix"]');
+
+  marqueeAsterix.forEach((asterix, index) => {
+    if (index % 2 === 0) {
+      gsap.to(asterix, {
+        rotate: 360,
+        repeat: -1,
+        ease: 'none',
+        duration: 7,
+      });
+    } else {
+      gsap.to(asterix, {
+        rotate: -360,
+        repeat: -1,
+        ease: 'none',
+        duration: 7,
+      });
+    }
+  });
+
+  // gsap.to('[am-element="marquee_asterix"]', {
+  //   rotate: 360,
+  //   repeat: -1,
+  //   ease: 'none',
+  //   duration: 7,
+  // });
+
+  // features row reveal animation
+  const featureRows = gsap.utils.toArray('[am-reveal-animation="row"]');
+  // console.log(featureRows);
+  let rowItems = [];
+
+  // featureRows.forEach((row) => {
+  //   rowItems = gsap.utils.toArray(row.children);
+  //   ScrollTrigger.batch(rowItems, {
+  //     start: 'top 30%',
+  //     // once: true,
+  //     onEnter: (batch) => {
+  //       batch.forEach((item, index) => {
+  //         const tl = gsap.timeline();
+  //         tl.set(item, { yPercent: 120 });
+  //         tl.to(item, { yPercent: 0, opacity: 1, delay: index * 0.4 });
+  //       });
+  //     },
+  //   });
+  // });
+
+  const tl = gsap.timeline();
+
+  featureRows.forEach((row, index) => {
+    rowItems = gsap.utils.toArray(row.children);
+    // console.log(rowItems);
+
+    gsap.from(rowItems, {
+      yPercent: 100,
+      stagger: 0.1,
+      delay: index * 0.4,
+      scrollTrigger: {
+        trigger: row,
+        start: 'top 70%',
+        once: true,
+      },
+    });
+
+    // rowItems.forEach((item, index) => {
+
+    // });
+
+    // ScrollTrigger.batch(rowItems, {
+    //   start: 'top 30%',
+    //   // once: true,
+    //   onEnter: (batch) => {
+    //     batch.forEach((item, index) => {
+    //       const tl = gsap.timeline();
+    //       tl.set(item, { yPercent: 120 });
+    //       tl.to(item, { yPercent: 0, opacity: 1, delay: index * 0.4 });
+    //     });
+    //   },
+    // });
+  });
+
+  ScrollTrigger.refresh();
 });
