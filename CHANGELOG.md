@@ -1,5 +1,11 @@
 # @maray-ai/ilona-agency-code
 
+## 1.6.0
+
+### Minor Changes
+
+- 5313abd: Fixed bugs and optimized the code.
+
 ## 1.5.0
 
 ### Minor Changes
