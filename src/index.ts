@@ -373,6 +373,24 @@ window.Webflow.push(() => {
     },
   });
 
+  // Rotate on hover
+  const cardLinks = gsap.utils.toArray('[am-hover-animation="rotate"]');
+  console.log(cardLinks);
+
+  cardLinks.forEach((card) => {
+    const cardLinkHoverTl = gsap.timeline({ paused: true });
+
+    cardLinkHoverTl.to(card, {
+      rotate: 1.5,
+      scale: 0.98,
+      duration: 0.25,
+      ease: 'power.out4',
+    });
+
+    card.addEventListener('mouseenter', () => cardLinkHoverTl.play());
+    card.addEventListener('mouseleave', () => cardLinkHoverTl.reverse());
+  });
+
   const marqueeAsterix = gsap.utils.toArray('[am-element="marquee_asterix"]');
 
   marqueeAsterix.forEach((asterix, index) => {
