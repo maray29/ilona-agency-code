@@ -137,7 +137,7 @@ window.Webflow.push(() => {
 
   // General reveal animation
   const revealElements = gsap.utils.toArray('[am-reveal-animation="item"]');
-  gsap.set(revealElements, { yPercent: 30, opacity: 0 });
+  gsap.set(revealElements, { y: 100, opacity: 0 });
 
   const start = 70;
   let specialStart;
@@ -149,7 +149,7 @@ window.Webflow.push(() => {
     start: 'top 80%',
     onEnter: (elements) => {
       gsap.to(elements, {
-        yPercent: 0,
+        y: 0,
         opacity: 1,
         stagger: 0.2,
         duration: 0.75,
