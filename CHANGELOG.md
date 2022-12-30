@@ -1,5 +1,11 @@
 # @maray-ai/ilona-agency-code
 
+## 1.7.0
+
+### Minor Changes
+
+- 15dc902: Worked on the comments from the client.
+
 ## 1.6.0
 
 ### Minor Changes
