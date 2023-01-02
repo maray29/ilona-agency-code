@@ -1,5 +1,11 @@
 # @maray-ai/ilona-agency-code
 
+## 1.9.0
+
+### Minor Changes
+
+- 19813a7: Removed hover interaction from mobile breakpoints.
+
 ## 1.8.0
 
 ### Minor Changes
