@@ -179,32 +179,38 @@ window.Webflow.push(() => {
     });
   });
 
+  const isMobile = /Mobi/i.test(window.navigator.userAgent);
+
   // Cards hover animation
   const cards = gsap.utils.toArray('[am-element="card1-element"]');
 
-  cards.forEach((card) => {
-    const cardImage1 = card.querySelector('.is-image1');
-    const cardImage2 = card.querySelector('.is-image2');
+  if (!isMobile) {
+    console.log(isMobile);
 
-    const cardTl = gsap.timeline({ paused: true });
+    cards.forEach((card) => {
+      const cardImage1 = card.querySelector('.is-image1');
+      const cardImage2 = card.querySelector('.is-image2');
 
-    cardTl.to(cardImage1, {
-      width: 0,
-      ease: 'power.out4',
-    });
+      const cardTl = gsap.timeline({ paused: true });
 
-    cardTl.from(
-      cardImage2,
-      {
-        xPercent: 30,
+      cardTl.to(cardImage1, {
+        width: 0,
         ease: 'power.out4',
-      },
-      '<'
-    );
+      });
 
-    card.addEventListener('mouseenter', () => cardTl.play());
-    card.addEventListener('mouseleave', () => cardTl.reverse());
-  });
+      cardTl.from(
+        cardImage2,
+        {
+          xPercent: 30,
+          ease: 'power.out4',
+        },
+        '<'
+      );
+
+      card.addEventListener('mouseenter', () => cardTl.play());
+      card.addEventListener('mouseleave', () => cardTl.reverse());
+    });
+  }
 
   // Cards movement animation
 
