@@ -19,7 +19,7 @@ window.Webflow.push(() => {
     gsap.set(section, { backgroundColor: 'transparent' });
 
     if (section.getAttribute('data-color') !== null) {
-      var colorAttr = section.getAttribute('data-color');
+      const colorAttr = section.getAttribute('data-color');
 
       gsap.to('.page-wrapper', {
         backgroundColor:
@@ -153,6 +153,21 @@ window.Webflow.push(() => {
         opacity: 1,
         stagger: 0.2,
         duration: 0.75,
+      });
+    },
+  });
+
+  // Soft reveal animation
+  const softRevealElements = gsap.utils.toArray('[am-reveal-animation="soft-reveal"]');
+  gsap.set(softRevealElements, { opacity: 0 });
+
+  ScrollTrigger.batch(softRevealElements, {
+    start: 'top 80%',
+    onEnter: (element) => {
+      gsap.to(element, {
+        opacity: 1,
+        stagger: 0.2,
+        duration: 1.5,
       });
     },
   });
@@ -463,6 +478,16 @@ window.Webflow.push(() => {
   }
 
   revealAnimation(containers, 70);
+
+  // Close menu on link click
+  const menuButton = document.querySelector('[am-element="menu-button"]');
+  const menuLinks = document.querySelectorAll('[am-element="menu-link"]');
+
+  menuLinks.forEach((link) => {
+    link.addEventListener('click', () => {
+      menuButton.click();
+    });
+  });
 
   ScrollTrigger.refresh();
 });
