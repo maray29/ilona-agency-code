@@ -1,5 +1,11 @@
 # @maray-ai/ilona-agency-code
 
+## 1.10.0
+
+### Minor Changes
+
+- 52a3c30: Added menu link click interaction.
+
 ## 1.9.0
 
 ### Minor Changes
