@@ -1,5 +1,11 @@
 # @maray-ai/ilona-agency-code
 
+## 1.12.0
+
+### Minor Changes
+
+- 1092112: Find the bug that breaks scrolltrigger.
+
 ## 1.11.0
 
 ### Minor Changes
