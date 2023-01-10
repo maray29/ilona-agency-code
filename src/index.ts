@@ -8,7 +8,7 @@ window.Webflow.push(() => {
   // const name = 'John Doe';
   // greetUser(name);
 
-  gsap.registerPlugin(ScrollTrigger);
+  gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
   // Section color change when in viewport
   const sections = gsap.utils.toArray('[data-color]');
@@ -67,6 +67,7 @@ window.Webflow.push(() => {
 
   ScrollTrigger.batch('[am-reveal-animation="header-button"]', {
     start: 'top 70%',
+    once: true,
     onEnter: (batch) => {
       gsap.set(batch, {
         yPercent: 40,
@@ -91,7 +92,7 @@ window.Webflow.push(() => {
     // console.log('I just ran');
   });
 
-  gsap.set(headerHeading, { opacity: 1 });
+  // gsap.set(headerHeading, { opacity: 1 });
 
   headerTl.from(
     splitHeading.chars,
@@ -499,8 +500,6 @@ window.Webflow.push(() => {
 
   // Scroll to section and highlight current section
 
-  gsap.registerPlugin(ScrollToPlugin);
-
   const array1 = gsap.utils.toArray(document.querySelectorAll('[am-section]'));
   const array2 = gsap.utils.toArray(document.querySelectorAll('[am-element="menu-link"]'));
 
@@ -509,9 +508,6 @@ window.Webflow.push(() => {
 
     for (let i = 0; i < arr1.length; i++) {
       for (let j = 0; j < arr2.length; j++) {
-        // const x = arr1[i].getAttribute('am-section');
-        // const y = arr2[j].getAttribute('[am-link]')
-        // console.log(x);
         if (arr1[i].getAttribute('am-section') === arr2[j].getAttribute('am-link')) {
           const pair = {
             section: arr1[i],
@@ -519,23 +515,39 @@ window.Webflow.push(() => {
           };
 
           // Set up ScrollTrigger
-          gsap.to(pair.link, {
-            scrollTrigger: {
-              trigger: pair.section,
-              start: 'top 60%',
-              end: 'bottom 40%',
-              toggleClass: { targets: pair.link, className: 'active' },
-              // onEnter: ({ progress, direction, isActive }) => console.log(arr1[i]),
-            },
+          // gsap.to(pair.link, {
+          //   scrollTrigger: {
+          //     trigger: pair.section,
+          //     start: 'top 60%',
+          //     end: 'bottom 40%',
+          //     toggleClass: { targets: pair.link, className: 'active' },
+          //     // onEnter: ({ progress, direction, isActive }) => console.log(arr1[i]),
+          //   },
+          // });
+
+          // console.log(pair);
+
+          ScrollTrigger.create({
+            trigger: pair.section,
+            start: 'top 60%',
+            end: 'bottom 40%',
+            // pin: pair.section,
+            // pinSpacing: false,
+            // onToggle: self => self.isActive && setActive(a),
+            toggleClass: { targets: pair.link, className: 'active' },
           });
 
-          // const id = '#' + pair.section.getAttribute('am-section');
-          // console.log(id);
-          pair.link.addEventListener('click', () => {
+          const id = '#' + pair.section.getAttribute('am-section');
+
+          // const getScroll = getScrollLookup(pair.link, 'top 60%');
+
+          pair.link.addEventListener('click', (e) => {
+            e.preventDefault();
             gsap.to(window, {
               duration: 1.5,
-              scrollTo: { y: pair.section },
+              scrollTo: pair.section,
               ease: 'power2.inOut',
+              overwrite: 'auto',
             });
           });
         }
@@ -543,10 +555,7 @@ window.Webflow.push(() => {
     }
   }
 
-  const pairs = createPairs(array1, array2);
-  // console.log(pairs);
-
-  // pairs.forEach((pair) => {});
+  createPairs(array1, array2);
 
   menuLinks.forEach((link) => {
     link.addEventListener('click', () => {
@@ -554,16 +563,9 @@ window.Webflow.push(() => {
         menuButton.click();
       }
     });
-
-    // gsap.to('.page-wrapper', {
-    //   scrollTrigger: {
-    //     trigger: section,
-    //     scrub: true,
-    //     start: 'top bottom',
-    //     end: '+=100%',
-    //   },
-    // });
   });
+
+  ScrollTrigger.refresh();
 
   window.addEventListener('resize', function () {
     ScrollTrigger.refresh();
