@@ -1,5 +1,11 @@
 # @maray-ai/ilona-agency-code
 
+## 1.13.0
+
+### Minor Changes
+
+- 3e300ed: Fixed event listener bug.
+
 ## 1.12.0
 
 ### Minor Changes
