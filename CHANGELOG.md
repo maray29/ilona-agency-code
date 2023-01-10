@@ -1,5 +1,11 @@
 # @maray-ai/ilona-agency-code
 
+## 1.11.0
+
+### Minor Changes
+
+- 5251436: Fixed bug with anchor scroll, added navigation animation, refresh scrolltrigger and split-type on resize.
+
 ## 1.10.0
 
 ### Minor Changes
