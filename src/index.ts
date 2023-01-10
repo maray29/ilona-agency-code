@@ -1,5 +1,5 @@
-// import { greetUser } from '$utils/greet';`
 import { gsap } from 'gsap';
+import ScrollToPlugin from 'gsap/ScrollToPlugin';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import SplitType from 'split-type';
 
@@ -11,8 +11,6 @@ window.Webflow.push(() => {
   gsap.registerPlugin(ScrollTrigger);
 
   // Section color change when in viewport
-  const section = document.querySelector('[am-animation=section-bg-change]');
-
   const sections = gsap.utils.toArray('[data-color]');
 
   sections.forEach((section, i) => {
@@ -40,23 +38,22 @@ window.Webflow.push(() => {
   const headerTl = gsap.timeline();
   const nav = document.querySelector('[am-element="nav-element"]');
   const headerText = document.querySelector('[am-element="header-text"]');
-  // const headerButtons = gsap.utils.toArray('[am-element="header-button"]');
   const headerHeading = document.querySelector('[am-element="header-heading"]');
   const headerVideo = document.querySelector('[am-element="video"]');
 
   // Nav bar intro animation
   headerTl.from(nav, {
     yPercent: 30,
-    opacity: 0,
+    duration: 0.75,
+    // opacity: 0,
+    autoAlpha: 0,
   });
 
   // Header text tween
-  const splitText = new SplitType(headerText, { types: `lines, words` });
-
-  // console.log(splitText.words);
+  const splitHeaderText = new SplitType(headerText, { types: `lines, words` });
 
   headerTl.from(
-    splitText.words,
+    splitHeaderText.words,
     {
       yPercent: 120,
       stagger: 0.05,
@@ -71,13 +68,28 @@ window.Webflow.push(() => {
   ScrollTrigger.batch('[am-reveal-animation="header-button"]', {
     start: 'top 70%',
     onEnter: (batch) => {
-      gsap.set(batch, { yPercent: 40, opacity: 0 });
-      gsap.to(batch, { yPercent: 0, opacity: 1, stagger: 0.2, delay: 0.4 });
+      gsap.set(batch, {
+        yPercent: 40,
+        // opacity: 0,
+        autoAlpha: 0,
+      });
+      gsap.to(batch, {
+        yPercent: 0,
+        // opacity: 1,
+        autoAlpha: 1,
+        stagger: 0.2,
+        delay: 0.4,
+      });
     },
   });
 
   // Heading animation
   const splitHeading = new SplitType(headerHeading, { types: 'words, chars' });
+
+  window.addEventListener('resize', () => {
+    splitHeading.split();
+    // console.log('I just ran');
+  });
 
   gsap.set(headerHeading, { opacity: 1 });
 
@@ -88,6 +100,7 @@ window.Webflow.push(() => {
       stagger: 0.02,
       duration: 0.6,
       ease: 'power.out4',
+      autoAlpha: 0,
     },
     '<'
   );
@@ -97,7 +110,8 @@ window.Webflow.push(() => {
     headerVideo,
     {
       yPercent: 30,
-      opacity: 0,
+      // opacity: 0,
+      autoAlpha: 0,
       delay: 0.2,
     },
     '<'
@@ -115,35 +129,38 @@ window.Webflow.push(() => {
     },
   });
 
-  // General text reveal animation
+  /*
+   * General text reveal animation
+   */
+  const text = [...document.querySelectorAll('[am-element="text-animation"]')];
 
-  const text = document.querySelectorAll('[am-element="text-animation"]');
+  function splitText(text) {
+    text.forEach((textToAnimate) => {
+      const splitText = new SplitType(textToAnimate, { types: `lines, words` });
 
-  text.forEach((textToAnimate) => {
-    const split_Text = new SplitType(textToAnimate, { types: `lines, words` });
-
-    gsap.from(split_Text.words, {
-      yPercent: 120,
-      stagger: 0.03,
-      duration: 0.4,
-      ease: 'power.out4',
-      scrollTrigger: {
-        trigger: textToAnimate,
-        start: 'top 80%',
-        once: true,
-      },
+      gsap.from(splitText.words, {
+        yPercent: 120,
+        stagger: 0.03,
+        duration: 0.4,
+        ease: 'power.out4',
+        scrollTrigger: {
+          trigger: textToAnimate,
+          start: 'top 80%',
+          once: true,
+        },
+      });
     });
+  }
+
+  splitText(text);
+
+  window.addEventListener('resize', () => {
+    splitText(text);
   });
 
   // General reveal animation
   const revealElements = gsap.utils.toArray('[am-reveal-animation="item"]');
   gsap.set(revealElements, { y: 100, opacity: 0 });
-
-  const start = 70;
-  let specialStart;
-  const maxScroll = ScrollTrigger.maxScroll(window);
-  // const anim = gsap.timeline();
-  console.log(maxScroll, 'max scroll');
 
   ScrollTrigger.batch(revealElements, {
     start: 'top 80%',
@@ -200,8 +217,6 @@ window.Webflow.push(() => {
   const cards = gsap.utils.toArray('[am-element="card1-element"]');
 
   if (!isMobile) {
-    console.log(isMobile);
-
     cards.forEach((card) => {
       const cardImage1 = card.querySelector('.is-image1');
       const cardImage2 = card.querySelector('.is-image2');
@@ -396,7 +411,6 @@ window.Webflow.push(() => {
 
   // Rotate on hover
   const cardLinks = gsap.utils.toArray('[am-hover-animation="rotate"]');
-  console.log(cardLinks);
 
   cardLinks.forEach((card) => {
     const cardLinkHoverTl = gsap.timeline({ paused: true });
@@ -436,7 +450,6 @@ window.Webflow.push(() => {
 
   // Select all list wrappers
   const containers = document.querySelectorAll('[am-reveal-animation="list"]');
-  console.log(containers);
 
   function revealAnimation(containers, start) {
     // Select the div container
@@ -480,14 +493,79 @@ window.Webflow.push(() => {
   revealAnimation(containers, 70);
 
   // Close menu on link click
+
   const menuButton = document.querySelector('[am-element="menu-button"]');
-  const menuLinks = document.querySelectorAll('[am-element="menu-link"]');
+  const menuLinks = gsap.utils.toArray(document.querySelectorAll('[am-element="menu-link"]'));
+
+  // Scroll to section and highlight current section
+
+  gsap.registerPlugin(ScrollToPlugin);
+
+  const array1 = gsap.utils.toArray(document.querySelectorAll('[am-section]'));
+  const array2 = gsap.utils.toArray(document.querySelectorAll('[am-element="menu-link"]'));
+
+  function createPairs(arr1, arr2) {
+    const pairs = [];
+
+    for (let i = 0; i < arr1.length; i++) {
+      for (let j = 0; j < arr2.length; j++) {
+        // const x = arr1[i].getAttribute('am-section');
+        // const y = arr2[j].getAttribute('[am-link]')
+        // console.log(x);
+        if (arr1[i].getAttribute('am-section') === arr2[j].getAttribute('am-link')) {
+          const pair = {
+            section: arr1[i],
+            link: arr2[j],
+          };
+
+          // Set up ScrollTrigger
+          gsap.to(pair.link, {
+            scrollTrigger: {
+              trigger: pair.section,
+              start: 'top 60%',
+              end: 'bottom 40%',
+              toggleClass: { targets: pair.link, className: 'active' },
+              // onEnter: ({ progress, direction, isActive }) => console.log(arr1[i]),
+            },
+          });
+
+          // const id = '#' + pair.section.getAttribute('am-section');
+          // console.log(id);
+          pair.link.addEventListener('click', () => {
+            gsap.to(window, {
+              duration: 1.5,
+              scrollTo: { y: pair.section },
+              ease: 'power2.inOut',
+            });
+          });
+        }
+      }
+    }
+  }
+
+  const pairs = createPairs(array1, array2);
+  // console.log(pairs);
+
+  // pairs.forEach((pair) => {});
 
   menuLinks.forEach((link) => {
     link.addEventListener('click', () => {
-      menuButton.click();
+      if (isMobile) {
+        menuButton.click();
+      }
     });
+
+    // gsap.to('.page-wrapper', {
+    //   scrollTrigger: {
+    //     trigger: section,
+    //     scrub: true,
+    //     start: 'top bottom',
+    //     end: '+=100%',
+    //   },
+    // });
   });
 
-  ScrollTrigger.refresh();
+  window.addEventListener('resize', function () {
+    ScrollTrigger.refresh();
+  });
 });
