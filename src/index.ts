@@ -10,6 +10,9 @@ window.Webflow.push(() => {
 
   gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
+  // Get window width to test if it changed to fire event listener
+  let width = window.innerWidth;
+
   // Section color change when in viewport
   const sections = gsap.utils.toArray('[data-color]');
 
@@ -36,6 +39,10 @@ window.Webflow.push(() => {
   });
 
   const headerTl = gsap.timeline();
+  headerTl.set('.page-wrapper', {
+    autoAlpha: 1,
+  });
+
   const nav = document.querySelector('[am-element="nav-element"]');
   const headerText = document.querySelector('[am-element="header-text"]');
   const headerHeading = document.querySelector('[am-element="header-heading"]');
@@ -87,12 +94,12 @@ window.Webflow.push(() => {
   // Heading animation
   const splitHeading = new SplitType(headerHeading, { types: 'words, chars' });
 
-  window.addEventListener('resize', () => {
-    splitHeading.split();
-    // console.log('I just ran');
+  window.addEventListener('resize', function () {
+    if (window.innerWidth !== width) {
+      splitHeading.split();
+      width = window.innerWidth;
+    }
   });
-
-  // gsap.set(headerHeading, { opacity: 1 });
 
   headerTl.from(
     splitHeading.chars,
@@ -155,8 +162,11 @@ window.Webflow.push(() => {
 
   splitText(text);
 
-  window.addEventListener('resize', () => {
-    splitText(text);
+  window.addEventListener('resize', function () {
+    if (window.innerWidth !== width) {
+      splitHeading.split();
+      width = window.innerWidth;
+    }
   });
 
   // General reveal animation
@@ -165,6 +175,7 @@ window.Webflow.push(() => {
 
   ScrollTrigger.batch(revealElements, {
     start: 'top 80%',
+    once: true,
     onEnter: (elements) => {
       gsap.to(elements, {
         y: 0,
@@ -181,6 +192,7 @@ window.Webflow.push(() => {
 
   ScrollTrigger.batch(softRevealElements, {
     start: 'top 80%',
+    once: true,
     onEnter: (element) => {
       gsap.to(element, {
         opacity: 1,
@@ -189,10 +201,6 @@ window.Webflow.push(() => {
       });
     },
   });
-
-  // ScrollTrigger.addEventListener('refreshInit', () =>
-  //   gsap.set(revealElements, { yPercent: 30, opacity: 0 })
-  // );
 
   // Divider reveal animation
   const dividers = gsap.utils.toArray('[am-reveal-animation="divider"');
@@ -283,7 +291,6 @@ window.Webflow.push(() => {
         trigger: card,
         start: 'top bottom',
         end: 'bottom top',
-        // markers: true,
         scrub: 2,
       },
     });
@@ -448,7 +455,6 @@ window.Webflow.push(() => {
   });
 
   // List items reveal animation
-
   // Select all list wrappers
   const containers = document.querySelectorAll('[am-reveal-animation="list"]');
 
@@ -462,7 +468,6 @@ window.Webflow.push(() => {
 
       if (i === containers.length - 1) {
         start = 90;
-        // console.log('true');
       }
 
       // Iterate over the child elements and add them to the array
@@ -494,12 +499,10 @@ window.Webflow.push(() => {
   revealAnimation(containers, 70);
 
   // Close menu on link click
-
   const menuButton = document.querySelector('[am-element="menu-button"]');
   const menuLinks = gsap.utils.toArray(document.querySelectorAll('[am-element="menu-link"]'));
 
   // Scroll to section and highlight current section
-
   const array1 = gsap.utils.toArray(document.querySelectorAll('[am-section]'));
   const array2 = gsap.utils.toArray(document.querySelectorAll('[am-element="menu-link"]'));
 
@@ -514,32 +517,13 @@ window.Webflow.push(() => {
             link: arr2[j],
           };
 
-          // Set up ScrollTrigger
-          // gsap.to(pair.link, {
-          //   scrollTrigger: {
-          //     trigger: pair.section,
-          //     start: 'top 60%',
-          //     end: 'bottom 40%',
-          //     toggleClass: { targets: pair.link, className: 'active' },
-          //     // onEnter: ({ progress, direction, isActive }) => console.log(arr1[i]),
-          //   },
-          // });
-
-          // console.log(pair);
-
           ScrollTrigger.create({
             trigger: pair.section,
             start: 'top 60%',
             end: 'bottom 40%',
-            // pin: pair.section,
-            // pinSpacing: false,
             // onToggle: self => self.isActive && setActive(a),
             toggleClass: { targets: pair.link, className: 'active' },
           });
-
-          const id = '#' + pair.section.getAttribute('am-section');
-
-          // const getScroll = getScrollLookup(pair.link, 'top 60%');
 
           pair.link.addEventListener('click', (e) => {
             e.preventDefault();
@@ -568,6 +552,9 @@ window.Webflow.push(() => {
   ScrollTrigger.refresh();
 
   window.addEventListener('resize', function () {
-    ScrollTrigger.refresh();
+    if (window.innerWidth !== width) {
+      ScrollTrigger.refresh();
+      width = window.innerWidth;
+    }
   });
 });
